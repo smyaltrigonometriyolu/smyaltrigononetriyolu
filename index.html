@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Trigonometri Yolu - Soru Oyunu</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="bg-effects" aria-hidden="true">
+        <span class="orb orb-1"></span>
+        <span class="orb orb-2"></span>
+        <span class="orb orb-3"></span>
+        <span class="grid-overlay"></span>
+    </div>
+
+    <div class="app">
+        <div id="mainScreen" class="screen screen-main">
+            <button id="statsBtn" class="corner-btn corner-btn-left" type="button" aria-label="Tur istatistikleri">📊</button>
+            <button id="infoBtn" class="corner-btn corner-btn-right" type="button" aria-label="Bilgi">?</button>
+            <header class="main-header">
+                <p class="eyebrow">Masa Oyunu · Dijital Soru Bankası</p>
+                <h1 class="title">TRIGONOMETRİ<br><span class="title-accent">YOLU</span></h1>
+            </header>
+            <p class="dice-hint">Zar rengine göre seviye seç</p>
+            <div class="difficulty-buttons">
+                <button class="difficulty-btn easy" type="button" data-difficulty="easy">
+                    <span class="dice-dot dice-green" aria-hidden="true"></span>
+                    <span class="diff-label">Kolay</span>
+                    <span class="diff-time">45 sn</span>
+                </button>
+                <button class="difficulty-btn medium" type="button" data-difficulty="medium">
+                    <span class="dice-dot dice-yellow" aria-hidden="true"></span>
+                    <span class="diff-label">Orta</span>
+                    <span class="diff-time">60 sn</span>
+                </button>
+                <button class="difficulty-btn hard" type="button" data-difficulty="hard">
+                    <span class="dice-dot dice-red" aria-hidden="true"></span>
+                    <span class="diff-label">Zor</span>
+                    <span class="diff-time">75 sn</span>
+                </button>
+            </div>
+            <div class="tur-bar" id="turBar">
+                <span id="turStatusText" class="tur-status">Tur başlamadı</span>
+                <div class="tur-actions">
+                    <button id="newTurBtn" class="tur-btn tur-btn-ghost" type="button">Yeni Tur</button>
+                    <button id="endTurBtn" class="tur-btn tur-btn-accent" type="button" disabled>Turu Bitir</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="questionScreen" class="screen screen-question hidden">
+            <header class="question-topbar">
+                <button id="questionBackBtn" class="icon-btn global-back-btn" type="button" aria-label="Ana menü">←</button>
+                <span id="difficultyBadge" class="difficulty-badge"></span>
+                <div class="chronometer" id="chronometer" aria-live="polite">
+                    <svg class="chronometer-ring" viewBox="0 0 100 100" aria-hidden="true">
+                        <circle class="chronometer-track" cx="50" cy="50" r="42"></circle>
+                        <circle class="chronometer-progress" id="chronometerProgress" cx="50" cy="50" r="42"></circle>
+                    </svg>
+                    <div class="chronometer-inner">
+                        <span id="timer" class="chronometer-value">45</span>
+                        <span class="chronometer-unit">sn</span>
+                    </div>
+                </div>
+            </header>
+
+            <article class="question-card">
+                <div id="questionImage" class="question-image hidden"></div>
+                <p id="questionText" class="question-text"></p>
+            </article>
+
+            <div class="options-container" role="group" aria-label="Cevap seçenekleri">
+                <button class="option-btn" type="button" data-index="0"><span class="option-letter">A</span><span class="option-text"></span></button>
+                <button class="option-btn" type="button" data-index="1"><span class="option-letter">B</span><span class="option-text"></span></button>
+                <button class="option-btn" type="button" data-index="2"><span class="option-letter">C</span><span class="option-text"></span></button>
+                <button class="option-btn" type="button" data-index="3"><span class="option-letter">D</span><span class="option-text"></span></button>
+            </div>
+
+            <div id="resultOverlay" class="result-overlay hidden" aria-live="assertive" aria-atomic="true">
+                <div class="result-backdrop"></div>
+                <div class="result-card">
+                    <div class="result-icon-ring" id="resultIconRing">
+                        <span class="result-icon" id="resultIcon" aria-hidden="true"></span>
+                    </div>
+                    <h2 id="resultTitle" class="result-title"></h2>
+                    <p id="resultSubtitle" class="result-subtitle"></p>
+                    <p id="resultHint" class="result-hint"></p>
+                    <div class="result-progress" id="resultProgress" aria-hidden="true"><span></span></div>
+                </div>
+                <div class="confetti-layer" id="confettiLayer" aria-hidden="true"></div>
+            </div>
+        </div>
+
+        <div id="infoModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+            <div class="modal-content">
+                <button id="closeModal" class="close-btn" type="button" aria-label="Kapat">×</button>
+                <h2 id="modalTitle">Trigonometri Yolu Hakkında</h2>
+                <div class="modal-scrollable">
+                    <div class="info-section">
+                        <div class="section-header">
+                            <div class="section-icon console-icon">🎮</div>
+                            <h3>Nasıl Oynanır</h3>
+                        </div>
+                        <div class="section-content">
+                            <p><strong>İlk Hamle:</strong> Oyuna kimin başlayacağı rastgele bir yöntemle belirlenir.</p>
+                            <p><strong>Kaderini Belirleyen Renkler:</strong> Sırası gelen oyuncu zarı atar. Zarın üzerinde gelen renk, çözmeniz gereken sorunun zorluk derecesini belirler.</p>
+                            <p><strong>Dijital Erişim:</strong> Oyun kutusunun üzerindeki QR kodu okutarak oyunun web sitesine giriş yapın. Sitede, zarda gelen renge uygun kategoriyi seçerek sorunuzu görüntüleyin.</p>
+                            <p><strong>Zamana Karşı Yarış:</strong> Soruları çözmek için süreniz kısıtlıdır!</p>
+                            <ul>
+                                <li><strong>Kolay Seviye:</strong> 45 Saniye</li>
+                                <li><strong>Orta Seviye:</strong> 60 Saniye</li>
+                                <li><strong>Zor Seviye:</strong> 75 Saniye</li>
+                            </ul>
+                            <p><strong>Hamle Hakkını Kazan:</strong> Soruyu doğru cevaplarsanız bir hamle hakkı kazanırsınız. Bu hakkınızı piyonunuzu ilerletmek veya rakibinizin yoluna engel koymak için kullanabilirsiniz. Yanlış cevapta sıra rakibe geçer.</p>
+                            <p><strong>Şansın Gücü (Yeşil Bölüm):</strong> Eğer zarın yeşil yüzü gelirse şanslısınız! "Şans Bölümü"ne ulaştınız demektir. Hemen bir Şans Kartı çekin ve üzerindeki talimatı uygulayın.</p>
+                            <p><strong>Zafere Giden Yol:</strong> Kendi piyonunu karşı taraftaki son sıraya ulaştıran ilk oyuncu, matematik savaşını kazanmış sayılır!</p>
+                        </div>
+                    </div>
+                    <div class="info-section">
+                        <div class="section-header">
+                            <div class="section-icon book-icon">📚</div>
+                            <h3>Kurallar</h3>
+                        </div>
+                        <div class="section-content">
+                            <p><strong>Başlangıç Pozisyonu:</strong> Her iki oyuncu da piyonunu, kendisine en yakın olan ilk sıranın tam orta karesine yerleştirerek oyuna başlar. İlk oyuncu rastgele seçilir.</p>
+                            <p><strong>Hamle Seçimi:</strong> Soruyu doğru cevaplayan oyuncu şu iki hareketten yalnızca birini yapabilir:</p>
+                            <ul>
+                                <li>Piyonunu yatay veya dikey olarak bir kare ilerletmek.</li>
+                                <li>Rakibinin ilerleyişini durdurmak için oyun alanına bir engel yerleştirmek.</li>
+                            </ul>
+                            <p><strong>Hareket Kısıtlamaları:</strong> Piyonlar çapraz hareket edemez. Sadece ileri, geri, sağa ve sola gidebilirler.</p>
+                            <p><strong>Atlama Kuralı:</strong> İki piyon karşı karşıya gelirse, sırası gelen oyuncu rakibinin piyonunun üzerinden atlayarak bir kare öne geçebilir.</p>
+                            <p><strong>Stratejik Engel Kullanımı:</strong> Her oyuncunun toplamda 10 adet engel hakkı vardır. Engeller bittiğinde sadece piyon hareket ettirilebilir.</p>
+                            <p><strong>Zorunlu Geçiş Yolu:</strong> Rakibinizin yolunu tamamen kapatmak yasaktır. Hedef sıraya ulaşabilmesi için her zaman en az bir adet açık kare bırakılmalıdır.</p>
+                            <p><strong>Hata ve Kayıp:</strong> Sorunun yanlış cevaplanması veya sürenin dolması durumunda hamle hakkı doğrudan rakibe geçer.</p>
+                        </div>
+                    </div>
+                </div>
+                <button id="backBtn" class="back-btn" type="button">← Ana Ekrana Dön</button>
+            </div>
+        </div>
+
+        <div id="statsModal" class="modal modal-top hidden" role="dialog" aria-modal="true" aria-labelledby="statsModalTitle">
+            <div class="modal-content modal-stats">
+                <button id="closeStatsModal" class="close-btn" type="button" aria-label="Kapat">×</button>
+                <h2 id="statsModalTitle">Tur Özeti</h2>
+                <div id="statsBody" class="stats-body"></div>
+                <div class="stats-modal-actions">
+                    <button id="statsNewTurBtn" class="tur-btn tur-btn-ghost" type="button">Yeni Tur</button>
+                    <button id="statsEndTurBtn" class="tur-btn tur-btn-accent" type="button">Turu Bitir</button>
+                    <button id="statsCloseBtn" class="back-btn" type="button">Kapat</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast" class="toast hidden" role="status"></div>
+
+    <script src="questions-data.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
