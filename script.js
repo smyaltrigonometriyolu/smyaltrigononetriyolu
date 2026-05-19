@@ -423,7 +423,7 @@ let shuffledCorrectIndex = null;
 
 // Timer süreleri zorluk bazlı
 const timerDurations = {
-    easy: 10,
+    easy: 30,
     medium: 45,
     hard: 60
 };
